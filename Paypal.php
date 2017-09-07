@@ -18,12 +18,12 @@ function wfPayPalExtension()
 {
     global $wgParser;
     global $ipbwiki_paypal;
-   // register the extension with the WikiText parser
-   $wgParser->setHook('paypal', 'renderPayPal');
+    // register the extension with the WikiText parser
+    $wgParser->setHook('paypal', 'renderPayPal');
 
     $ipbwiki_paypal = [];
     // CHANGE THE LINES BELOW TO REFLECT TO YOUR PAYPAL BUTTONS!!! (there's no limit on the number of buttons you define)
-   $ipbwiki_paypal[1] = '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+    $ipbwiki_paypal[1] = '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input name="cmd" value="_s-xclick" type="hidden">
 <input name="hosted_button_id" value="46Z9GLNM3ATXL" type="hidden">
 <input src="https://www.paypalobjects.com/fr_FR/i/btn/btn_donate_LG.gif" name="submit" alt="PayPal - la solution de paiement en ligne la plus simple et la plus sécurisée !" type="image">
@@ -39,7 +39,7 @@ function renderPayPal($input, $argv)
     $pos_space = strpos($input, ' ');
     if (!$pos_space) {
         if (is_numeric($input)) {  // format <paypal>number</paypal>
-           $part1 = $input;
+            $part1 = $input;
             $part2 = '';
             if (!$ipbwiki_paypal[$part1]) {
                 print_r('warning, specified paypal button not found, defaulting to button 1');
@@ -47,11 +47,11 @@ function renderPayPal($input, $argv)
                 $part2 = $input;
             }
         } else {                   // format <paypal>text</paypal> & format <paypal></paypal>
-           $part1 = 1;
+            $part1 = 1;
             $part2 = $input;
         }
     } else {                       // format <paypal>number text</paypal>
-       $part1 = substr($input, 0, $pos_space);
+        $part1 = substr($input, 0, $pos_space);
         $part2 = substr($input, $pos_space + 1);
         if (is_numeric($part1)) {
             if (!$ipbwiki_paypal[$part1]) {
@@ -59,22 +59,22 @@ function renderPayPal($input, $argv)
                 $part1 = 1;
             }
         } else {                 // format <paypal>text</paypal>
-           $part1 = 1;
+            $part1 = 1;
             $part2 = $input;
         }
     }
     $form = $ipbwiki_paypal[$part1];
-   // if the ipbwiki interface is available, then use the clean function which is defined there, otherwise just clean the necessities...
-   if (class_exists('ipbwiki')) {
-       $input = $wgAuth->ipbwiki->ipbwiki->clean_value($part2);
-   } else {
-       $part2 = str_replace('>', '&gt;', $part2);
-       $part2 = str_replace('<', '&lt;', $part2);
-       $part2 = str_replace('"', '&quot;', $part2);
-       $part2 = str_replace('!', '&#33;', $part2);
-       $part2 = str_replace("'", '&#39;', $part2);
-       $input = $part2;
-   }
+    // if the ipbwiki interface is available, then use the clean function which is defined there, otherwise just clean the necessities...
+    if (class_exists('ipbwiki')) {
+        $input = $wgAuth->ipbwiki->ipbwiki->clean_value($part2);
+    } else {
+        $part2 = str_replace('>', '&gt;', $part2);
+        $part2 = str_replace('<', '&lt;', $part2);
+        $part2 = str_replace('"', '&quot;', $part2);
+        $part2 = str_replace('!', '&#33;', $part2);
+        $part2 = str_replace("'", '&#39;', $part2);
+        $input = $part2;
+    }
     $output = $form.$input;
 
     return $output;
